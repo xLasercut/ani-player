@@ -1,0 +1,5 @@
+const IPC_EVENTS = {
+  GET_ANIME_DETAILS: 'GET_ANIME_DETAILS'
+};
+
+export { IPC_EVENTS };

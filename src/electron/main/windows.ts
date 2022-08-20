@@ -3,45 +3,79 @@ import { join } from 'path';
 import { IS_DEV } from './constants';
 import { getUrl } from './helpers';
 
-let mainWindow: BrowserWindow;
+class AniPlayerWindows {
+  public main!: BrowserWindow;
+  public anime!: BrowserWindow;
+  public episode!: BrowserWindow;
 
-function openAnimeWindow(): void {
-  const animeWindow = new BrowserWindow({
-    width: 300,
-    height: 720,
-    parent: mainWindow
-  });
+  public createEpisode(): void {
+    this.episode = new BrowserWindow({
+      width: 300,
+      height: 720,
+      webPreferences: {
+        preload: join(__dirname, '../preload/preload.js')
+      }
+    });
 
-  animeWindow.removeMenu();
-  animeWindow.loadURL(getUrl('/anime-select'));
-}
+    this.episode.removeMenu();
+    this.episode.loadURL(getUrl('/episode-select'));
 
-function openEpisodeWindow(): void {
-  const episodeWindow = new BrowserWindow({
-    width: 300,
-    height: 720,
-    parent: mainWindow
-  });
+    if (IS_DEV) {
+      this.episode.webContents.openDevTools();
+    }
+  }
 
-  episodeWindow.removeMenu();
-  episodeWindow.loadURL(getUrl('/episode-select'));
-}
+  public createMain(): void {
+    this.main = new BrowserWindow({
+      width: 1280,
+      height: 720,
+      webPreferences: {
+        preload: join(__dirname, '../preload/preload.js')
+      },
+      autoHideMenuBar: true
+    });
 
-function openMainWindow(): void {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
-    webPreferences: {
-      preload: join(__dirname, '../preload/preload.js')
-    },
-    autoHideMenuBar: true
-  });
+    this.main.loadURL(getUrl('/main-player'));
 
-  mainWindow.loadURL(getUrl('/main-player'));
+    this.main.on('closed', () => {
+      if (!this.episode.isDestroyed()) {
+        this.episode.close();
+      }
 
-  if (IS_DEV) {
-    mainWindow.webContents.openDevTools();
+      if (!this.episode.isDestroyed()) {
+        this.anime.close();
+      }
+    });
+
+    if (IS_DEV) {
+      this.main.webContents.openDevTools();
+    }
+  }
+
+  public createAnime(): void {
+    this.anime = new BrowserWindow({
+      width: 500,
+      height: 720,
+      webPreferences: {
+        preload: join(__dirname, '../preload/preload.js')
+      }
+    });
+
+    this.anime.removeMenu();
+    this.anime.loadURL(getUrl('/anime-select'));
+
+    if (IS_DEV) {
+      this.anime.webContents.openDevTools();
+    }
+  }
+
+  public createAll(): void {
+    this.createMain();
+    this.createAnime();
+    this.createEpisode();
   }
 }
 
-export { openAnimeWindow, openMainWindow, openEpisodeWindow };
+const aniPlayerWindows = new AniPlayerWindows();
+
+export { AniPlayerWindows, aniPlayerWindows };

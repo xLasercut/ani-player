@@ -1,33 +1,63 @@
-// src/electron/main/main.ts
-import { app, BrowserWindow, Menu } from 'electron';
-import { menu } from './menu';
-import { openAnimeWindow, openEpisodeWindow, openMainWindow } from './windows';
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
+import { AniPlayerWindows } from './windows';
+import { EventEmitter } from 'node:events';
+import { APP_EVENTS } from './constants';
 
-Menu.setApplicationMenu(menu);
+class MainApp {
+  protected _windows: AniPlayerWindows;
+  public onEvent: EventEmitter = new EventEmitter();
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  openMainWindow();
-  openEpisodeWindow();
-  openAnimeWindow();
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      openMainWindow();
-      openEpisodeWindow();
-      openAnimeWindow();
-    }
-  });
-});
+  constructor(windows: AniPlayerWindows) {
+    this._windows = windows;
+    Menu.setApplicationMenu(this._generateMenu());
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+    app.on('ready', () => {
+      this._windows.createAll();
+      this.onEvent.emit(APP_EVENTS.WINDOW_CREATED);
+    });
+
+    app.on('activate', () => {
+      // On macOS it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      if (BrowserWindow.getAllWindows().length === 0) {
+        this._windows.createAll();
+      }
+    });
+
+    app.on('window-all-closed', () => {
+      this._onWindowAllClosed();
+    });
   }
-});
+
+  protected _onWindowAllClosed(): void {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  }
+
+  protected _generateMenu(): Menu {
+    const template: MenuItemConstructorOptions[] = [
+      {
+        label: 'Window',
+        submenu: [
+          {
+            label: 'Anime',
+            click: () => {
+              this._windows.createAnime();
+            }
+          },
+          {
+            label: 'Episode',
+            click: () => {
+              this._windows.createEpisode();
+            }
+          }
+        ]
+      }
+    ];
+
+    return Menu.buildFromTemplate(template);
+  }
+}
+
+export { MainApp };
