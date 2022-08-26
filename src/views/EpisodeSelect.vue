@@ -21,7 +21,7 @@ interface State {
 }
 
 export default defineComponent({
-  components: {EpisodeInfo, AnimeEpisodes, AnimeInfo, Row },
+  components: {EpisodeInfo, AnimeEpisodes, AnimeInfo, Row},
   setup() {
     const state = reactive<State>({
       animeDetails: {
@@ -49,19 +49,25 @@ export default defineComponent({
 
     ipc.on(IPC_EVENTS.GET_ANIME_DETAILS, async (animeId: string): Promise<void> => {
       const response = await axios.get(
-        `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
+          `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
       );
       state.animeDetails = response.data;
+      state.episodeDetails = {
+        headers: {
+          Referer: ''
+        },
+        sources: []
+      };
     });
 
     async function getEpisodeDetails(episodeId: string): Promise<void> {
       const response = await axios.get(
-        `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
+          `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
       );
       state.episodeDetails = response.data;
     }
 
-    return { ...toRefs(state), getEpisodeDetails };
+    return {...toRefs(state), getEpisodeDetails};
   }
 });
 </script>
