@@ -46,7 +46,6 @@ class AniPlayerWindows {
     });
 
     this.main.loadURL(getUrl('/main-player'));
-    this.main.setAspectRatio(16 / 9);
 
     this.main.on('closed', () => {
       if (!this.episode.isDestroyed()) {
