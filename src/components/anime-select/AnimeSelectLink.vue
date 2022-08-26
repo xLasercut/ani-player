@@ -1,8 +1,8 @@
 <template>
   <div class="container" @click="click()">
-    <img :src="anime.animeImg" />
-    <div class="title">{{ anime.animeTitle }}</div>
-    <div class="status">{{ anime.status }}</div>
+    <img :src="anime.image" />
+    <div class="title">{{ anime.title }} - {{ anime.subOrDub }}</div>
+    <div class="status">{{ anime.releaseDate }}</div>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup(props) {
     function click(): void {
-      ipc.send(IPC_EVENTS.GET_ANIME_DETAILS, props.anime.animeId);
+      ipc.send(IPC_EVENTS.GET_ANIME_DETAILS, props.anime.id);
     }
 
     return { click };

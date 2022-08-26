@@ -8,15 +8,18 @@ const router = createRouter({
   routes: [
     {
       path: '/main-player',
-      component: MainPlayer
+      component: MainPlayer,
+      name: 'Main Player'
     },
     {
       path: '/anime-select',
-      component: AnimeSelect
+      component: AnimeSelect,
+      name: 'Anime Select'
     },
     {
       path: '/episode-select',
-      component: EpisodeSelect
+      component: EpisodeSelect,
+      name: 'Episode Select'
     }
   ]
 });
