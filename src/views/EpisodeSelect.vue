@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
 import { ipc } from '../assets/frontend/ipc';
-import { IPC_EVENTS } from '../assets/shared/constants';
+import { IPC_EVENTS } from '../electron/shared/constants';
 import axios from 'axios';
 import { AnimeDetails, AnimeEpisodeDetails } from '../assets/interfaces';
 import Row from '../components/grid/Row.vue';

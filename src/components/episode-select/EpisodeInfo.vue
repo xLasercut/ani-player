@@ -11,7 +11,7 @@ import { defineComponent, PropType } from 'vue';
 import { AnimeEpisodeDetails } from '../../assets/interfaces';
 import Row from '../grid/Row.vue';
 import { ipc } from '../../assets/frontend/ipc';
-import { IPC_EVENTS } from '../../assets/shared/constants';
+import { IPC_EVENTS } from '../../electron/shared/constants';
 
 export default defineComponent({
   components: { Row },

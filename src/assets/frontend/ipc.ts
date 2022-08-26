@@ -1,4 +1,4 @@
-import { IPC } from '../shared/interfaces';
+import { IPC } from '../../electron/shared/interfaces';
 
 declare global {
   interface Window {

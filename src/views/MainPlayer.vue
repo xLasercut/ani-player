@@ -16,7 +16,7 @@
 import { defineComponent, reactive, ref, toRefs } from 'vue';
 import { DefaultUi, Hls, Player, Video } from '@vime/vue-next';
 import { ipc } from '../assets/frontend/ipc';
-import { IPC_EVENTS } from '../assets/shared/constants';
+import { IPC_EVENTS } from '../electron/shared/constants';
 
 export default defineComponent({
   components: { Player, DefaultUi, Hls, Video },

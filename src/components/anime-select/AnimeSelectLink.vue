@@ -10,7 +10,7 @@
 import { defineComponent, PropType } from 'vue';
 import { Anime } from '../../assets/interfaces';
 import { ipc } from '../../assets/frontend/ipc';
-import { IPC_EVENTS } from '../../assets/shared/constants';
+import { IPC_EVENTS } from '../../electron/shared/constants';
 
 export default defineComponent({
   props: {
