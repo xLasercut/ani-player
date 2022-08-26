@@ -3,7 +3,13 @@
     <div class="episodes">Episodes:</div>
   </row>
   <row>
-    <button v-for="episode in sortedEpisode()" @click="click(episode)">{{ episode.number }}</button>
+    <button
+      v-for="episode in sortedEpisode()"
+      @click="click(episode)"
+      :class="classes(episode)"
+    >
+      {{ episode.number }}
+    </button>
   </row>
 </template>
 
@@ -17,6 +23,10 @@ export default defineComponent({
   props: {
     animeDetails: {
       type: Object as PropType<AnimeDetails>,
+      required: true
+    },
+    currentEpisode: {
+      type: String,
       required: true
     }
   },
@@ -38,9 +48,18 @@ export default defineComponent({
       context.emit('episode:select', episode.id);
     }
 
+    function classes(episode: AnimeEpisode): string {
+      const classes = ['episode-button']
+      if (episode.id === props.currentEpisode) {
+        classes.push('current-episode')
+      }
+      return classes.join(' ')
+    }
+
     return {
       sortedEpisode,
-      click
+      click,
+      classes
     };
   }
 });
@@ -52,7 +71,7 @@ export default defineComponent({
   font-size: 11pt;
 }
 
-button {
+.episode-button {
   background: var(--color-black-4);
   margin-right: 5px;
   margin-bottom: 5px;
@@ -66,12 +85,16 @@ button {
   font-weight: bold;
 }
 
-button:hover {
+.episode-button:hover {
   background: var(--color-frost-2);
 }
 
-button:active {
+.episode-button:active {
   position: relative;
   top: 1px;
+}
+
+.current-episode {
+  background: var(--color-frost-1);
 }
 </style>

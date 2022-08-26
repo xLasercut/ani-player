@@ -1,7 +1,11 @@
 <template>
   <row>
-    <button v-for="(source, index) in episodeDetails.sources" @click="playVideo(source.url)">
-      Server {{ index + 1 }} - {{ videoFormat(source.url) }}
+    <button
+      v-for="(source, index) in episodeDetails.sources"
+      :title="source.url"
+      @click="playVideo(source.url)"
+    >
+      Source {{ index + 1 }} - {{ videoFormat(source.url) }}
     </button>
   </row>
 </template>

@@ -1,6 +1,10 @@
 <template>
   <anime-info :anime-details="animeDetails"></anime-info>
-  <AnimeEpisodes :anime-details="animeDetails" @episode:select="getEpisodeDetails($event)"></AnimeEpisodes>
+  <AnimeEpisodes
+    :anime-details="animeDetails"
+    @episode:select="getEpisodeDetails($event)"
+    :current-episode="currentEpisode"
+  ></AnimeEpisodes>
   <episode-info :episode-details="episodeDetails"></episode-info>
 </template>
 
@@ -18,11 +22,19 @@ import EpisodeInfo from '../components/episode-select/EpisodeInfo.vue';
 interface State {
   animeDetails: AnimeDetails;
   episodeDetails: AnimeEpisodeDetails;
+  currentEpisode: string;
 }
 
 export default defineComponent({
-  components: {EpisodeInfo, AnimeEpisodes, AnimeInfo, Row},
+  components: { EpisodeInfo, AnimeEpisodes, AnimeInfo, Row },
   setup() {
+    const _DEFAULT_EPISODE_DETAILS = {
+      headers: {
+        Referer: ''
+      },
+      sources: []
+    };
+
     const state = reactive<State>({
       animeDetails: {
         id: '',
@@ -39,35 +51,29 @@ export default defineComponent({
         otherName: '',
         episodes: []
       },
-      episodeDetails: {
-        headers: {
-          Referer: ''
-        },
-        sources: []
-      }
+      episodeDetails: Object.assign({}, _DEFAULT_EPISODE_DETAILS),
+      currentEpisode: ''
     });
 
     ipc.on(IPC_EVENTS.GET_ANIME_DETAILS, async (animeId: string): Promise<void> => {
+      state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
+      state.currentEpisode = '';
       const response = await axios.get(
-          `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
+        `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
       );
       state.animeDetails = response.data;
-      state.episodeDetails = {
-        headers: {
-          Referer: ''
-        },
-        sources: []
-      };
     });
 
     async function getEpisodeDetails(episodeId: string): Promise<void> {
+      state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       const response = await axios.get(
-          `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
+        `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
       );
       state.episodeDetails = response.data;
+      state.currentEpisode = episodeId;
     }
 
-    return {...toRefs(state), getEpisodeDetails};
+    return { ...toRefs(state), getEpisodeDetails };
   }
 });
 </script>

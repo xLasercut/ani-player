@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <player class="main-player" :volume="100" :autoplay="isHls()" ref="player" @vmPlaybackReady="playVideo()">
+    <player
+      class="main-player"
+      :autopause="false"
+      :volume="100"
+      :autoplay="isHls()"
+      ref="player"
+      @vmPlaybackReady="playVideo()"
+    >
       <default-ui></default-ui>
       <Video v-if="!isHls()">
         <source :data-src="videoUrl" />
@@ -13,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue';
+import { defineComponent, nextTick, reactive, ref, toRefs } from 'vue';
 import { DefaultUi, Hls, Player, Video } from '@vime/vue-next';
 import { ipc } from '../assets/frontend/ipc';
 import { IPC_EVENTS } from '../electron/shared/constants';
@@ -28,7 +35,10 @@ export default defineComponent({
     const player = ref<any>(null);
 
     ipc.on(IPC_EVENTS.PLAY_VIDEO, (videoUrl: string) => {
-      state.videoUrl = videoUrl;
+      state.videoUrl = '';
+      nextTick(() => {
+        state.videoUrl = videoUrl;
+      });
     });
 
     function isHls(): boolean {
