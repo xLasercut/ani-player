@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
+  <div>
     <player
-      class="main-player"
-      :autopause="false"
-      :volume="100"
-      :autoplay="isHls()"
-      ref="player"
-      @vmPlaybackReady="playVideo()"
+        class="main-player"
+        :autopause="false"
+        :volume="100"
+        :autoplay="isHls()"
+        ref="player"
+        @vmPlaybackReady="playVideo()"
     >
       <default-ui></default-ui>
       <Video v-if="!isHls()">

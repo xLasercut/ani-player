@@ -1,34 +1,56 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
+  line-height: 14pt;
   font-weight: 400;
 
   --color-black-4: #2e3440;
   --color-black-3: #3b4252;
   --color-black-2: #434c5e;
   --color-black-1: #4c566a;
-  --color-white-3: #D8DEE9;
-  --color-white-2: #E5E9F0;
-  --color-white-1: #ECEFF4;
-  --color-frost-4: #8FBCBB;
-  --color-frost-3: #88C0D0;
-  --color-frost-2: #81A1C1;
-  --color-frost-1: #5E81AC;
-  --color-aurora-red: #BF616A;
-  --color-aurora-orange: #D08770;
-  --color-aurora-yellow: #EBCB8B;
-  --color-aurora-green: #A3BE8C;
-  --color-aurora-purple: #B48EAD;
+  --color-white-3: #d8dee9;
+  --color-white-2: #e5e9f0;
+  --color-white-1: #eceff4;
+  --color-frost-4: #8fbcbb;
+  --color-frost-3: #88c0d0;
+  --color-frost-2: #81a1c1;
+  --color-frost-1: #5e81ac;
+  --color-aurora-red: #bf616a;
+  --color-aurora-orange: #d08770;
+  --color-aurora-yellow: #ebcb8b;
+  --color-aurora-green: #a3be8c;
+  --color-aurora-purple: #b48ead;
 
   color: var(--color-white-1);
   background-color: var(--color-black-1);
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.col {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.anime-details-container {
+  height: calc(100vh - 40px);
+  background: var(--color-black-4);
+  overflow: auto;
+  word-wrap: break-word;
+  width: calc(50% - 40px);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
 }
 
 body {
@@ -41,3 +63,42 @@ body {
 }
 
 
+button {
+  background: var(--color-frost-1);
+  color: var(--color-white-1);
+  border-radius: 3px;
+  border: 0;
+  cursor: pointer;
+  font-size: 11pt;
+  padding: 10px;
+}
+
+button:hover {
+  background: var(--color-frost-2);
+}
+
+button:active {
+  position: relative;
+  top: 1px;
+}
+
+button:disabled {
+  color: var(--color-black-1);
+  cursor: default;
+  background: var(--color-black-3);
+  top: 0;
+}
+
+input {
+  background: var(--color-black-2);
+  color: var(--color-white-1);
+  border: 0;
+  border-radius: 3px;
+  font-size: 11pt;
+  outline: none;
+  padding: 10px;
+}
+
+input:focus {
+  outline: 2px solid var(--color-frost-1);
+}

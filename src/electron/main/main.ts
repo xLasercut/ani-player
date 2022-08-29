@@ -45,12 +45,6 @@ class MainApp {
             click: () => {
               this._windows.createAnime();
             }
-          },
-          {
-            label: 'Episode',
-            click: () => {
-              this._windows.createEpisode();
-            }
           }
         ]
       }

@@ -6,34 +6,6 @@ import { getUrl } from './helpers';
 class AniPlayerWindows {
   public main!: BrowserWindow;
   public anime!: BrowserWindow;
-  public episode!: BrowserWindow;
-
-  public createEpisode(): void {
-    if (this.episode && !this.episode.isDestroyed()) {
-      this.episode.show();
-      return;
-    }
-
-    const mainWindowPosition = this.main.getPosition();
-
-    this.episode = new BrowserWindow({
-      width: 700,
-      height: 720,
-      webPreferences: {
-        preload: join(__dirname, '../preload/preload.js')
-      },
-      x: mainWindowPosition[0],
-      y: mainWindowPosition[1]
-    });
-
-    this.episode.removeMenu();
-    this.episode.loadURL(getUrl('/episode-select'));
-    this.episode.show();
-
-    if (IS_DEV) {
-      this.episode.webContents.openDevTools();
-    }
-  }
 
   public createMain(): void {
     this.main = new BrowserWindow({
@@ -48,11 +20,7 @@ class AniPlayerWindows {
     this.main.loadURL(getUrl('/main-player'));
 
     this.main.on('closed', () => {
-      if (!this.episode.isDestroyed()) {
-        this.episode.close();
-      }
-
-      if (!this.episode.isDestroyed()) {
+      if (!this.anime.isDestroyed()) {
         this.anime.close();
       }
     });
@@ -68,16 +36,12 @@ class AniPlayerWindows {
       return;
     }
 
-    const mainWindowPosition = this.main.getPosition();
-
     this.anime = new BrowserWindow({
-      width: 500,
+      width: 1280,
       height: 720,
       webPreferences: {
         preload: join(__dirname, '../preload/preload.js')
-      },
-      x: mainWindowPosition[0] + 800,
-      y: mainWindowPosition[1]
+      }
     });
 
     this.anime.removeMenu();
@@ -92,7 +56,6 @@ class AniPlayerWindows {
   public createAll(): void {
     this.createMain();
     this.createAnime();
-    this.createEpisode();
   }
 }
 

@@ -1,20 +1,41 @@
 {
   "name": "ani-player",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "author": "xLasercut",
-  "main": "dist/electron/main/index.js",
   "scripts": {
-    "vite:dev": "vite --host 0.0.0.0 --port 3000",
-    "vite:build": "vue-tsc --noEmit && vite build",
-    "vite:preview": "vite preview",
-    "ts": "tsc",
-    "watch": "tsc -w",
+    "serve": "vite preview",
+    "build": "vite build",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "app:dev": "tsc && concurrently \"vite --host 0.0.0.0 --port 3000\" \" electron .\" \"tsc -w\"",
     "app:build": "npm run vite:build && tsc && electron-builder",
+    "app:dev": "tsc && concurrently \"vite --host 0.0.0.0 --port 3000\" \" electron .\" \"tsc -w\"",
     "app:preview": "npm run vite:build && tsc && electron .",
-    "prettier:format": "prettier --config .prettierrc 'src/**/*.{ts,vue}' --write"
+    "dev": "vite",
+    "prettier:format": "prettier --config .prettierrc 'src/**/*.{ts,vue}' --write",
+    "ts": "tsc",
+    "vite:build": "vue-tsc --noEmit && vite build",
+    "vite:dev": "vite --host 0.0.0.0 --port 3000",
+    "vite:preview": "vite preview",
+    "watch": "tsc -w"
+  },
+  "main": "dist/electron/main/index.js",
+  "dependencies": {
+    "@vime/core": "^5.3.1",
+    "@vime/vue-next": "^5.3.1",
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.0",
+    "vue": "^3.2.37",
+    "vue-router": "^4.1.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.3",
+    "concurrently": "^7.3.0",
+    "electron": "^20.0.1",
+    "electron-builder": "^23.3.3",
+    "prettier": "^2.7.1",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.8",
+    "vue-tsc": "^0.38.4"
   },
   "build": {
     "appId": "dev.lasercut.ani-player",
@@ -49,24 +70,6 @@
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
     }
-  },
-  "dependencies": {
-    "@vime/core": "^5.3.1",
-    "@vime/vue-next": "^5.3.1",
-    "axios": "^0.27.2",
-    "vue": "^3.2.37",
-    "vue-router": "^4.1.3"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^3.0.0",
-    "concurrently": "^7.3.0",
-    "cross-env": "^7.0.3",
-    "electron": "^20.0.1",
-    "electron-builder": "^23.3.3",
-    "prettier": "^2.7.1",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.0",
-    "vue-tsc": "^0.38.4"
   },
   "license": "MIT"
 }

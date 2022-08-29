@@ -1,23 +1,24 @@
 <template>
-  <anime-info :anime-details="animeDetails"></anime-info>
-  <AnimeEpisodes
-    :anime-details="animeDetails"
-    @episode:select="getEpisodeDetails($event)"
-    :current-episode="currentEpisode"
-  ></AnimeEpisodes>
-  <episode-info :episode-details="episodeDetails"></episode-info>
+  <div class="anime-details-container">
+    <anime-info :anime-details="animeDetails"></anime-info>
+    <anime-episodes
+      :anime-details="animeDetails"
+      :current-episode="currentEpisode"
+      @episode:select="getEpisodeDetails($event)"
+    ></anime-episodes>
+    <episode-info :episode-details="episodeDetails"></episode-info>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
-import { ipc } from '../assets/frontend/ipc';
-import { IPC_EVENTS } from '../electron/shared/constants';
+import { AnimeDetails, AnimeEpisodeDetails } from '../../../assets/interfaces';
+import { ipc } from '../../../assets/frontend/ipc';
+import { IPC_EVENTS } from '../../../electron/shared/constants';
 import axios from 'axios';
-import { AnimeDetails, AnimeEpisodeDetails } from '../assets/interfaces';
-import Row from '../components/grid/Row.vue';
-import AnimeInfo from '../components/episode-select/AnimeInfo.vue';
-import AnimeEpisodes from '../components/episode-select/AnimeEpisodes.vue';
-import EpisodeInfo from '../components/episode-select/EpisodeInfo.vue';
+import AnimeInfo from './AnimeInfo.vue';
+import AnimeEpisodes from './AnimeEpisodes.vue';
+import EpisodeInfo from './EpisodeInfo.vue';
 
 interface State {
   animeDetails: AnimeDetails;
@@ -26,7 +27,7 @@ interface State {
 }
 
 export default defineComponent({
-  components: { EpisodeInfo, AnimeEpisodes, AnimeInfo, Row },
+  components: { EpisodeInfo, AnimeEpisodes, AnimeInfo },
   setup() {
     const _DEFAULT_EPISODE_DETAILS = {
       headers: {
@@ -34,7 +35,6 @@ export default defineComponent({
       },
       sources: []
     };
-
     const state = reactive<State>({
       animeDetails: {
         id: '',

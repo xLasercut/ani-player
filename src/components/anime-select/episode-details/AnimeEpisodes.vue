@@ -1,25 +1,21 @@
 <template>
-  <row>
-    <div class="episodes">Episodes:</div>
-  </row>
-  <row>
-    <button
-      v-for="episode in sortedEpisode()"
-      @click="click(episode)"
-      :class="classes(episode)"
-    >
-      {{ episode.number }}
-    </button>
-  </row>
+  <div class="row episodes">
+    {{ animeDetails.episodes.length > 0 ? 'Episodes:' : '' }}
+  </div>
+  <div class="row">
+    <div class="col" v-for="episode in sortedEpisode()">
+      <button :class="classes(episode)" @click="click(episode)">
+        {{ episode.number }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import Row from '../grid/Row.vue';
-import { AnimeDetails, AnimeEpisode } from '../../assets/interfaces';
+import { AnimeDetails, AnimeEpisode } from '../../../assets/interfaces';
 
 export default defineComponent({
-  components: { Row },
   props: {
     animeDetails: {
       type: Object as PropType<AnimeDetails>,
@@ -49,11 +45,10 @@ export default defineComponent({
     }
 
     function classes(episode: AnimeEpisode): string {
-      const classes = ['episode-button']
       if (episode.id === props.currentEpisode) {
-        classes.push('current-episode')
+        return 'current-episode';
       }
-      return classes.join(' ')
+      return '';
     }
 
     return {
@@ -71,30 +66,12 @@ export default defineComponent({
   font-size: 11pt;
 }
 
-.episode-button {
-  background: var(--color-black-4);
-  margin-right: 5px;
-  margin-bottom: 5px;
+button {
   width: 60px;
-  color: var(--color-white-1);
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
   padding: 5px;
-  font-size: 11pt;
-  font-weight: bold;
-}
-
-.episode-button:hover {
-  background: var(--color-frost-2);
-}
-
-.episode-button:active {
-  position: relative;
-  top: 1px;
 }
 
 .current-episode {
-  background: var(--color-frost-1);
+  background: var(--color-black-2);
 }
 </style>
