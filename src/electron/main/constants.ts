@@ -1,4 +1,4 @@
-import { AppConfig } from '../shared/interfaces';
+import { AppConfig } from '../interfaces';
 
 const IS_DEV = process.env.npm_lifecycle_event === 'app:dev';
 const APP_EVENTS = {
