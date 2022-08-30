@@ -1,10 +1,13 @@
 import { MainApp } from './main';
-import { aniPlayerWindows } from './windows';
+import { AniPlayerWindows } from './windows';
 import { APP_EVENTS } from './constants';
 import { IpcHandler } from './ipc';
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
+import { AniPlayerConfig } from './config';
 
-const mainApp = new MainApp(aniPlayerWindows);
+const config = new AniPlayerConfig(app);
+const aniPlayerWindows = new AniPlayerWindows(config);
+const mainApp = new MainApp(app, aniPlayerWindows, config);
 const ipcHandler = new IpcHandler(aniPlayerWindows, ipcMain);
 
 mainApp.onEvent.on(APP_EVENTS.WINDOW_CREATED, () => {

@@ -23,3 +23,6 @@ release
 *.njsproj
 *.sln
 *.sw?
+
+# ani player settings
+ani-player-settings.json

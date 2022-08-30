@@ -1,18 +1,23 @@
 import { BrowserWindow } from 'electron';
 import { join } from 'path';
-import { IS_DEV } from './constants';
+import { DEFAULT_CONFIG, IS_DEV } from './constants';
 import { getUrl } from './helpers';
+import { AniPlayerConfig } from './config';
 
 class AniPlayerWindows {
   public main!: BrowserWindow;
-  public anime!: BrowserWindow;
+  public animeSelect!: BrowserWindow;
+  protected _config: AniPlayerConfig;
+
+  constructor(config: AniPlayerConfig) {
+    this._config = config;
+  }
 
   public createMain(): void {
     this.main = new BrowserWindow({
-      width: 1280,
-      height: 720,
+      ...this._config.mainWindowSize,
       webPreferences: {
-        preload: join(__dirname, '../preload/preload.js')
+        preload: join(__dirname, '..', 'preload', 'preload.js')
       },
       autoHideMenuBar: true
     });
@@ -20,9 +25,17 @@ class AniPlayerWindows {
     this.main.loadURL(getUrl('/main-player'));
 
     this.main.on('closed', () => {
-      if (!this.anime.isDestroyed()) {
-        this.anime.close();
+      if (this._isAnimeWindowExists()) {
+        this.animeSelect.close();
       }
+    });
+
+    this.main.on('resize', () => {
+      const windowSize = this.main.getSize();
+      this._config.mainWindowSize = {
+        width: windowSize[0],
+        height: windowSize[1]
+      };
     });
 
     if (IS_DEV) {
@@ -31,25 +44,32 @@ class AniPlayerWindows {
   }
 
   public createAnime(): void {
-    if (this.anime && !this.anime.isDestroyed()) {
-      this.anime.show();
+    if (this._isAnimeWindowExists()) {
+      this.animeSelect.show();
       return;
     }
 
-    this.anime = new BrowserWindow({
-      width: 1280,
-      height: 720,
+    this.animeSelect = new BrowserWindow({
+      ...this._config.animeSelectWindowSize,
       webPreferences: {
-        preload: join(__dirname, '../preload/preload.js')
+        preload: join(__dirname, '..', 'preload', 'preload.js')
       }
     });
 
-    this.anime.removeMenu();
-    this.anime.loadURL(getUrl('/anime-select'));
-    this.anime.show();
+    this.animeSelect.removeMenu();
+    this.animeSelect.loadURL(getUrl('/anime-select'));
+    this.animeSelect.show();
+
+    this.animeSelect.on('resize', () => {
+      const windowSize = this.animeSelect.getSize();
+      this._config.animeSelectWindowSize = {
+        width: windowSize[0],
+        height: windowSize[1]
+      };
+    });
 
     if (IS_DEV) {
-      this.anime.webContents.openDevTools();
+      this.animeSelect.webContents.openDevTools();
     }
   }
 
@@ -57,8 +77,20 @@ class AniPlayerWindows {
     this.createMain();
     this.createAnime();
   }
+
+  public resetSize(): void {
+    this.main.setSize(DEFAULT_CONFIG.mainWindowSize.width, DEFAULT_CONFIG.mainWindowSize.height);
+    if (this._isAnimeWindowExists()) {
+      this.animeSelect.setSize(
+        DEFAULT_CONFIG.animeSelectWindowSize.width,
+        DEFAULT_CONFIG.animeSelectWindowSize.height
+      );
+    }
+  }
+
+  protected _isAnimeWindowExists(): boolean {
+    return this.animeSelect && !this.animeSelect.isDestroyed();
+  }
 }
 
-const aniPlayerWindows = new AniPlayerWindows();
-
-export { AniPlayerWindows, aniPlayerWindows };
+export { AniPlayerWindows };
