@@ -10,10 +10,10 @@
     >
       <default-ui></default-ui>
       <Video v-if="!isHls()">
-        <source :data-src="videoUrl" />
+        <source :data-src="videoUrl"/>
       </Video>
       <hls v-if="isHls()">
-        <source :data-src="videoUrl" />
+        <source :data-src="videoUrl"/>
       </hls>
     </player>
   </div>
@@ -26,7 +26,7 @@ import { ipc } from '../assets/frontend/ipc';
 import { IPC_EVENTS } from '../electron/shared/constants';
 
 export default defineComponent({
-  components: { Player, DefaultUi, Hls, Video },
+  components: {Player, DefaultUi, Hls, Video},
   setup() {
     const state = reactive({
       videoUrl: ''

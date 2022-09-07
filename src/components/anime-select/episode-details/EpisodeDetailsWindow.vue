@@ -2,9 +2,9 @@
   <div class="anime-details-container">
     <anime-info :anime-details="animeDetails"></anime-info>
     <anime-episodes
-      :anime-details="animeDetails"
-      :current-episode="currentEpisode"
-      @episode:select="getEpisodeDetails($event)"
+        :anime-details="animeDetails"
+        :current-episode="currentEpisode"
+        @episode:select="getEpisodeDetails($event)"
     ></anime-episodes>
     <episode-info :episode-details="episodeDetails"></episode-info>
   </div>
@@ -27,7 +27,7 @@ interface State {
 }
 
 export default defineComponent({
-  components: { EpisodeInfo, AnimeEpisodes, AnimeInfo },
+  components: {EpisodeInfo, AnimeEpisodes, AnimeInfo},
   setup() {
     const _DEFAULT_EPISODE_DETAILS = {
       headers: {
@@ -59,7 +59,7 @@ export default defineComponent({
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       state.currentEpisode = '';
       const response = await axios.get(
-        `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
+          `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
       );
       state.animeDetails = response.data;
     });
@@ -67,13 +67,19 @@ export default defineComponent({
     async function getEpisodeDetails(episodeId: string): Promise<void> {
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       const response = await axios.get(
-        `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
+          `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
       );
       state.episodeDetails = response.data;
       state.currentEpisode = episodeId;
+      const hlsSources = state.episodeDetails.sources.filter((episode) => {
+        return episode.isM3U8;
+      });
+      if (hlsSources.length > 0) {
+        ipc.send(IPC_EVENTS.PLAY_VIDEO, hlsSources[0].url);
+      }
     }
 
-    return { ...toRefs(state), getEpisodeDetails };
+    return {...toRefs(state), getEpisodeDetails};
   }
 });
 </script>

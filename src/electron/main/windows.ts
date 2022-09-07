@@ -17,7 +17,9 @@ class AniPlayerWindows {
     this.main = new BrowserWindow({
       ...this._config.mainWindowSize,
       webPreferences: {
-        preload: join(__dirname, '..', 'preload', 'preload.js')
+        preload: join(__dirname, '..', 'preload', 'preload.js'),
+        backgroundThrottling: false,
+        disableHtmlFullscreenWindowResize: true
       },
       autoHideMenuBar: true
     });
