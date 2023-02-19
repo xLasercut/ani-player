@@ -11,14 +11,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
-import { AnimeDetails, AnimeEpisodeDetails } from '../../../assets/interfaces';
-import { ipc } from '../../../assets/frontend/ipc';
-import { IPC_EVENTS } from '../../../electron/shared/constants';
+import {defineComponent, reactive, toRefs} from 'vue';
+import {AnimeDetails, AnimeEpisodeDetails} from '../../../assets/interfaces';
+import {ipc} from '../../../assets/frontend/ipc';
+import {IPC_EVENTS} from '../../../electron/shared/constants';
 import axios from 'axios';
 import AnimeInfo from './AnimeInfo.vue';
 import AnimeEpisodes from './AnimeEpisodes.vue';
 import EpisodeInfo from './EpisodeInfo.vue';
+import {API_URL} from "../../../assets/constants";
 
 interface State {
   animeDetails: AnimeDetails;
@@ -59,7 +60,7 @@ export default defineComponent({
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       state.currentEpisode = '';
       const response = await axios.get(
-          `https://api.consumet.org/anime/gogoanime/info/${animeId}`
+          `${API_URL}/anime/gogoanime/info/${animeId}`
       );
       state.animeDetails = response.data;
     });
@@ -67,7 +68,7 @@ export default defineComponent({
     async function getEpisodeDetails(episodeId: string): Promise<void> {
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       const response = await axios.get(
-          `https://api.consumet.org/anime/gogoanime/watch/${episodeId}`
+          `${API_URL}/anime/gogoanime/watch/${episodeId}`
       );
       state.episodeDetails = response.data;
       state.currentEpisode = episodeId;

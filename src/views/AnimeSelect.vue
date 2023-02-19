@@ -6,11 +6,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
+import {defineComponent, reactive, toRefs} from 'vue';
 import axios from 'axios';
-import { Anime, AnimeSearch } from '../assets/interfaces';
+import {Anime, AnimeSearch} from '../assets/interfaces';
 import AnimeDetailsWindow from '../components/anime-select/anime-details/AnimeDetailsWindow.vue';
 import EpisodeDetailsWindow from '../components/anime-select/episode-details/EpisodeDetailsWindow.vue';
+import {API_URL} from "../assets/constants";
 
 interface State {
   animes: Anime[];
@@ -20,7 +21,7 @@ interface State {
 }
 
 export default defineComponent({
-  components: { EpisodeDetailsWindow, AnimeDetailsWindow },
+  components: {EpisodeDetailsWindow, AnimeDetailsWindow},
   setup() {
     const state = reactive<State>({
       currentPage: 1,
@@ -31,7 +32,7 @@ export default defineComponent({
 
     async function search(page: number): Promise<void> {
       const response = await axios.get(
-        `https://api.consumet.org/anime/gogoanime/${state.searchQuery}?page=${page}`
+          `${API_URL}/anime/gogoanime/${state.searchQuery}?page=${page}`
       );
       const searchResults: AnimeSearch = response.data;
       state.animes = searchResults.results;

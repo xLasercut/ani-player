@@ -48,6 +48,7 @@ import { defineComponent, reactive, toRefs } from 'vue';
 import axios from 'axios';
 import { Anime, AnimeSearch } from '../../../assets/interfaces';
 import AnimeSelectLink from './AnimeSelectLink.vue';
+import {API_URL} from "../../../assets/constants";
 
 interface State {
   animes: Anime[];
@@ -68,7 +69,7 @@ export default defineComponent({
 
     async function search(page: number): Promise<void> {
       const response = await axios.get(
-        `https://api.consumet.org/anime/gogoanime/${state.searchQuery}?page=${page}`
+        `${API_URL}/anime/gogoanime/${state.searchQuery}?page=${page}`
       );
       const searchResults: AnimeSearch = response.data;
       state.animes = searchResults.results;
