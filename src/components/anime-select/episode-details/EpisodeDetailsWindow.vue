@@ -59,7 +59,7 @@ export default defineComponent({
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       state.currentEpisode = '';
       const response = await axios.get(
-          `https://consumet-api.herokuapp.com/anime/gogoanime/info/${animeId}`
+          `https://api.consumet.org/anime/gogoanime/info/${animeId}`
       );
       state.animeDetails = response.data;
     });
@@ -67,7 +67,7 @@ export default defineComponent({
     async function getEpisodeDetails(episodeId: string): Promise<void> {
       state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
       const response = await axios.get(
-          `https://consumet-api.herokuapp.com/anime/gogoanime/watch/${episodeId}`
+          `https://api.consumet.org/anime/gogoanime/watch/${episodeId}`
       );
       state.episodeDetails = response.data;
       state.currentEpisode = episodeId;

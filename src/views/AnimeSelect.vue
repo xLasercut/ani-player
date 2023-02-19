@@ -31,7 +31,7 @@ export default defineComponent({
 
     async function search(page: number): Promise<void> {
       const response = await axios.get(
-        `https://consumet-api.herokuapp.com/anime/gogoanime/${state.searchQuery}?page=${page}`
+        `https://api.consumet.org/anime/gogoanime/${state.searchQuery}?page=${page}`
       );
       const searchResults: AnimeSearch = response.data;
       state.animes = searchResults.results;
