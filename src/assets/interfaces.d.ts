@@ -45,6 +45,7 @@ interface AnimeEpisodeDetails {
 interface AnimeEpisodeDetailsSource {
   url: string;
   isM3U8: boolean;
+  quality: string;
 }
 
 export {

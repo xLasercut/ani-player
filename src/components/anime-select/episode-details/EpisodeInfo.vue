@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col" v-for="(source, index) in episodeDetails.sources" cols="auto">
       <button :title="source.url" @click="playVideo(source.url)">
-        Source {{ index + 1 }} - {{ videoFormat(source.url) }}
+        Source {{ index + 1 }} - {{ videoFormat(source.url) }} - {{ source.quality }}
       </button>
     </div>
   </div>
