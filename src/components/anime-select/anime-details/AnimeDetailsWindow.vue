@@ -2,17 +2,10 @@
   <div class="anime-details-container">
     <div class="row">
       <div class="col">
-        <input
-          variant="outlined"
-          label="Search"
-          hide-details
-          v-model.trim="searchQuery"
-          @keyup.enter="search(1)"
-          density="compact"
-        />
+        <input v-model.trim="searchQuery" @keyup.enter="search(1)" />
       </div>
       <div class="col">
-        <button variant="flat" color="success">Search</button>
+        <button @click="search(1)">Search</button>
       </div>
     </div>
     <div class="row">
@@ -20,24 +13,10 @@
     </div>
     <div class="row">
       <div class="col">
-        <button
-          color="success"
-          variant="flat"
-          @click="search(currentPage - 1)"
-          :disabled="previousDisabled()"
-        >
-          Previous
-        </button>
+        <button @click="search(currentPage - 1)" :disabled="previousDisabled()">Previous</button>
       </div>
       <div class="col">
-        <button
-          color="success"
-          variant="flat"
-          @click="search(currentPage + 1)"
-          :disabled="nextDisabled()"
-        >
-          Next
-        </button>
+        <button @click="search(currentPage + 1)" :disabled="nextDisabled()">Next</button>
       </div>
     </div>
   </div>
@@ -48,7 +27,7 @@ import { defineComponent, reactive, toRefs } from 'vue';
 import axios from 'axios';
 import { Anime, AnimeSearch } from '../../../assets/interfaces';
 import AnimeSelectLink from './AnimeSelectLink.vue';
-import {API_URL} from "../../../assets/constants";
+import { API_URL } from '../../../assets/constants';
 
 interface State {
   animes: Anime[];
@@ -68,13 +47,15 @@ export default defineComponent({
     });
 
     async function search(page: number): Promise<void> {
-      const response = await axios.get(
-        `${API_URL}/anime/gogoanime/${state.searchQuery}?page=${page}`
-      );
-      const searchResults: AnimeSearch = response.data;
-      state.animes = searchResults.results;
-      state.currentPage = Number(searchResults.currentPage);
-      state.hasNextPage = searchResults.hasNextPage;
+      try {
+        const response = await axios.get(`${API_URL}/anime/gogoanime/${state.searchQuery}?page=${page}`);
+        const searchResults: AnimeSearch = response.data;
+        state.animes = searchResults.results;
+        state.currentPage = Number(searchResults.currentPage);
+        state.hasNextPage = searchResults.hasNextPage;
+      } catch (e) {
+        alert(e);
+      }
     }
 
     function previousDisabled(): boolean {

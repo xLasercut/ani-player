@@ -12,7 +12,11 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
-import { AnimeDetails, AnimeEpisodeDetails } from '../../../assets/interfaces';
+import {
+  AnimeDetails,
+  AnimeEpisodeDetails,
+  AnimeEpisodeDetailsSource
+} from '../../../assets/interfaces';
 import { ipc } from '../../../assets/frontend/ipc';
 import { IPC_EVENTS } from '../../../electron/shared/constants';
 import axios from 'axios';
@@ -57,30 +61,48 @@ export default defineComponent({
     });
 
     ipc.on(IPC_EVENTS.GET_ANIME_DETAILS, async (animeId: string): Promise<void> => {
-      state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
-      state.currentEpisode = '';
-      const response = await axios.get(`${API_URL}/anime/gogoanime/info/${animeId}`);
-      state.animeDetails = response.data;
+      try {
+        state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
+        state.currentEpisode = '';
+        const response = await axios.get(`${API_URL}/anime/gogoanime/info/${animeId}`);
+        state.animeDetails = response.data;
+      } catch (e) {
+        alert(e);
+      }
     });
 
-    async function getEpisodeDetails(episodeId: string): Promise<void> {
-      state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
-      const response = await axios.get(`${API_URL}/anime/gogoanime/watch/${episodeId}`);
-      state.episodeDetails = response.data;
-      state.currentEpisode = episodeId;
-      const hlsSources = state.episodeDetails.sources.filter((episode) => {
-        return episode.isM3U8;
-      });
-      if (hlsSources.length > 0) {
-        const highestQuality = hlsSources.filter((hlsSource) => {
-          return hlsSource.quality === 'default';
-        });
+    function getVideoUrl(hlsSources: AnimeEpisodeDetailsSource[]): string {
+      if (hlsSources.length === 0) {
+        return '';
+      }
 
-        if (highestQuality.length > 0) {
-          ipc.send(IPC_EVENTS.PLAY_VIDEO, highestQuality[0].url);
-        } else {
-          ipc.send(IPC_EVENTS.PLAY_VIDEO, hlsSources[0].url);
+      const highestQuality = hlsSources.filter((hlsSource) => {
+        return hlsSource.quality === 'default';
+      });
+
+      if (highestQuality.length > 0) {
+        return highestQuality[0].url;
+      }
+
+      return hlsSources[0].url;
+    }
+
+    async function getEpisodeDetails(episodeId: string): Promise<void> {
+      try {
+        state.episodeDetails = Object.assign({}, _DEFAULT_EPISODE_DETAILS);
+        const response = await axios.get(`${API_URL}/anime/gogoanime/watch/${episodeId}`);
+        state.episodeDetails = response.data;
+        state.currentEpisode = episodeId;
+        const hlsSources = state.episodeDetails.sources.filter((episode) => {
+          return episode.isM3U8;
+        });
+        const videoUrl = getVideoUrl(hlsSources);
+
+        if (videoUrl) {
+          ipc.send(IPC_EVENTS.PLAY_VIDEO, videoUrl);
         }
+      } catch (e) {
+        alert(e);
       }
     }
 

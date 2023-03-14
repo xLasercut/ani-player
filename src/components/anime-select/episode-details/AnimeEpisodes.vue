@@ -16,6 +16,7 @@ import { defineComponent, PropType } from 'vue';
 import { AnimeDetails, AnimeEpisode } from '../../../assets/interfaces';
 
 export default defineComponent({
+  emits: ['episode:select'],
   props: {
     animeDetails: {
       type: Object as PropType<AnimeDetails>,
