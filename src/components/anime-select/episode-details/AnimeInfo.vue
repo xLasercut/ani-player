@@ -21,16 +21,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { PropType } from 'vue';
 import { AnimeDetails } from '../../../assets/interfaces';
 
-export default defineComponent({
-  props: {
-    animeDetails: {
-      type: Object as PropType<AnimeDetails>,
-      required: true
-    }
+defineProps({
+  animeDetails: {
+    type: Object as PropType<AnimeDetails>,
+    required: true
   }
 });
 </script>
@@ -40,10 +38,12 @@ export default defineComponent({
   font-size: 12pt;
   font-weight: bold;
 }
+
 .released {
   font-style: italic;
   font-size: 10pt;
 }
+
 .description {
   font-size: 11pt;
 }

@@ -1,13 +1,13 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const windowSizeConfigSchema = Joi.object({
-  height: Joi.number().required(),
-  width: Joi.number().required()
-}).label('AppConfigWindowSize');
+const AppConfigWindowSize = z.object({
+  height: z.number(),
+  width: z.number()
+});
 
-const aniPlayerConfigSchema = Joi.object({
-  mainWindowSize: windowSizeConfigSchema.required(),
-  animeSelectWindowSize: windowSizeConfigSchema.required()
-}).label('AppConfig');
+const AppConfig = z.object({
+  mainWindowSize: AppConfigWindowSize,
+  animeSelectWindowSize: AppConfigWindowSize
+});
 
-export { aniPlayerConfigSchema, windowSizeConfigSchema };
+export { AppConfigWindowSize, AppConfig };

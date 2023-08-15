@@ -1,34 +1,29 @@
 <template>
   <div class="col" @click="click()">
-    <img :src="anime.image"/>
+    <img :src="anime.image" :alt="`${anime.title} poster`" />
     <div class="title">
       {{ anime.title }}
     </div>
-    <div class="status"> {{ anime.releaseDate }} ({{ anime.subOrDub }})</div>
+    <div class="status">{{ anime.releaseDate }} ({{ anime.subOrDub }})</div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { PropType } from 'vue';
 import { Anime } from '../../../assets/interfaces';
 import { ipc } from '../../../assets/frontend/ipc';
 import { IPC_EVENTS } from '../../../electron/shared/constants';
 
-export default defineComponent({
-  props: {
-    anime: {
-      type: Object as PropType<Anime>,
-      required: true
-    }
-  },
-  setup(props) {
-    function click(): void {
-      ipc.send(IPC_EVENTS.GET_ANIME_DETAILS, props.anime.id);
-    }
-
-    return { click };
+const props = defineProps({
+  anime: {
+    type: Object as PropType<Anime>,
+    required: true
   }
 });
+
+function click(): void {
+  ipc.send(IPC_EVENTS.GET_ANIME_DETAILS, props.anime.id);
+}
 </script>
 
 <style scoped>
@@ -66,6 +61,7 @@ img {
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .status {
   font-size: 10pt;
   font-style: italic;

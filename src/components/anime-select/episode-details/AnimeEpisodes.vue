@@ -11,54 +11,45 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { PropType } from 'vue';
 import { AnimeDetails, AnimeEpisode } from '../../../assets/interfaces';
 
-export default defineComponent({
-  emits: ['episode:select'],
-  props: {
-    animeDetails: {
-      type: Object as PropType<AnimeDetails>,
-      required: true
-    },
-    currentEpisode: {
-      type: String,
-      required: true
-    }
+const emit = defineEmits(['episode:select']);
+const props = defineProps({
+  animeDetails: {
+    type: Object as PropType<AnimeDetails>,
+    required: true
   },
-  setup(props, context) {
-    function sortedEpisode(): AnimeEpisode[] {
-      return props.animeDetails.episodes.sort((a, b) => {
-        if (a.number === b.number) {
-          return 0;
-        }
-
-        if (a.number > b.number) {
-          return 1;
-        }
-        return -1;
-      });
-    }
-
-    function click(episode: AnimeEpisode): void {
-      context.emit('episode:select', episode.id);
-    }
-
-    function classes(episode: AnimeEpisode): string {
-      if (episode.id === props.currentEpisode) {
-        return 'current-episode';
-      }
-      return '';
-    }
-
-    return {
-      sortedEpisode,
-      click,
-      classes
-    };
+  currentEpisode: {
+    type: String,
+    required: true
   }
 });
+
+function sortedEpisode(): AnimeEpisode[] {
+  return props.animeDetails.episodes.sort((a, b) => {
+    if (a.number === b.number) {
+      return 0;
+    }
+
+    if (a.number > b.number) {
+      return 1;
+    }
+    return -1;
+  });
+}
+
+function click(episode: AnimeEpisode): void {
+  emit('episode:select', episode.id);
+}
+
+function classes(episode: AnimeEpisode): string {
+  if (episode.id === props.currentEpisode) {
+    return 'current-episode';
+  }
+  return '';
+}
 </script>
 
 <style scoped>

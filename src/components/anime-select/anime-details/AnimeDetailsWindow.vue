@@ -22,56 +22,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import axios from 'axios';
 import { Anime, AnimeSearch } from '../../../assets/interfaces';
 import AnimeSelectLink from './AnimeSelectLink.vue';
 import { API_URL } from '../../../assets/constants';
 
-interface State {
-  animes: Anime[];
-  searchQuery: string;
-  currentPage: number;
-  hasNextPage: boolean;
+const currentPage = ref(1);
+const animes = ref<Anime[]>([]);
+const searchQuery = ref('');
+const hasNextPage = ref(false);
+
+async function search(page: number): Promise<void> {
+  try {
+    const response = await axios.get(
+      `${API_URL}/anime/gogoanime/${searchQuery.value}?page=${page}`
+    );
+    const searchResults: AnimeSearch = response.data;
+    animes.value = searchResults.results;
+    currentPage.value = Number(searchResults.currentPage);
+    hasNextPage.value = searchResults.hasNextPage;
+  } catch (e) {
+    alert(e);
+  }
 }
 
-export default defineComponent({
-  components: { AnimeSelectLink },
-  setup() {
-    const state = reactive<State>({
-      currentPage: 1,
-      animes: [],
-      searchQuery: '',
-      hasNextPage: false
-    });
+function previousDisabled(): boolean {
+  return currentPage.value <= 1;
+}
 
-    async function search(page: number): Promise<void> {
-      try {
-        const response = await axios.get(`${API_URL}/anime/gogoanime/${state.searchQuery}?page=${page}`);
-        const searchResults: AnimeSearch = response.data;
-        state.animes = searchResults.results;
-        state.currentPage = Number(searchResults.currentPage);
-        state.hasNextPage = searchResults.hasNextPage;
-      } catch (e) {
-        alert(e);
-      }
-    }
-
-    function previousDisabled(): boolean {
-      return state.currentPage <= 1;
-    }
-
-    function nextDisabled(): boolean {
-      return !state.hasNextPage;
-    }
-
-    return {
-      ...toRefs(state),
-      search,
-      previousDisabled,
-      nextDisabled
-    };
-  }
-});
+function nextDisabled(): boolean {
+  return !hasNextPage.value;
+}
 </script>

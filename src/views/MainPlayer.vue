@@ -1,64 +1,52 @@
 <template>
   <div class="container">
-    <player
-        class="main-player"
-        :autopause="false"
-        :volume="100"
-        :autoplay="isHls()"
-        ref="player"
-        @vmPlaybackReady="playVideo()"
+    <Player
+      class="main-player"
+      :autopause="false"
+      :volume="100"
+      :autoplay="isHls()"
+      ref="player"
+      @vmPlaybackReady="playVideo()"
     >
       <default-ui></default-ui>
       <Video v-if="!isHls()">
-        <source :data-src="videoUrl"/>
+        <source :data-src="videoUrl" />
       </Video>
       <hls v-if="isHls()">
-        <source :data-src="videoUrl"/>
+        <source :data-src="videoUrl" />
       </hls>
-    </player>
+    </Player>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, reactive, ref, toRefs } from 'vue';
-import { DefaultUi, Hls, Player, Video } from '@vime/vue-next';
+<script setup lang="ts">
+import { nextTick, onMounted, ref } from 'vue';
+import { DefaultUi, Hls, Video, Player } from '@vime/vue-next';
 import { ipc } from '../assets/frontend/ipc';
 import { IPC_EVENTS } from '../electron/shared/constants';
 
-export default defineComponent({
-  components: {Player, DefaultUi, Hls, Video},
-  setup() {
-    const state = reactive({
-      videoUrl: ''
+const videoUrl = ref('');
+
+const player = ref<any>(null);
+
+onMounted(() => {
+  ipc.on(IPC_EVENTS.PLAY_VIDEO, (_videoUrl: string) => {
+    videoUrl.value = '';
+    nextTick(() => {
+      videoUrl.value = _videoUrl;
     });
-
-    const player = ref<any>(null);
-
-    ipc.on(IPC_EVENTS.PLAY_VIDEO, (videoUrl: string) => {
-      state.videoUrl = '';
-      nextTick(() => {
-        state.videoUrl = videoUrl;
-      });
-    });
-
-    function isHls(): boolean {
-      return state.videoUrl.endsWith('.m3u8');
-    }
-
-    function playVideo(): void {
-      if (!isHls()) {
-        player.value.play();
-      }
-    }
-
-    return {
-      ...toRefs(state),
-      isHls,
-      player,
-      playVideo
-    };
-  }
+  });
 });
+
+function isHls(): boolean {
+  return videoUrl.value.endsWith('.m3u8');
+}
+
+function playVideo(): void {
+  if (!isHls()) {
+    player.value.play();
+  }
+}
 </script>
 
 <style scoped>

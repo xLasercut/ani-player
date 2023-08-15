@@ -2,13 +2,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { App } from 'electron';
 import { DEFAULT_CONFIG, IS_DEV } from './constants';
-import { AppConfig, AppConfigWindowSize } from '../interfaces';
-import { aniPlayerConfigSchema } from '../schemas/config';
+import { AppConfigType, AppConfigWindowSizeType } from '../schemas/types';
+import { AppConfig } from '../schemas/config';
 
 class AniPlayerConfig {
   protected _app: App;
   protected _configFilepath: string;
-  protected _config: AppConfig;
+  protected _config: AppConfigType;
 
   constructor(app: App) {
     this._app = app;
@@ -16,11 +16,11 @@ class AniPlayerConfig {
     this._config = this._getConfig();
   }
 
-  set mainWindowSize(size: AppConfigWindowSize) {
+  set mainWindowSize(size: AppConfigWindowSizeType) {
     this._config.mainWindowSize = size;
   }
 
-  set animeSelectWindowSize(size: AppConfigWindowSize) {
+  set animeSelectWindowSize(size: AppConfigWindowSizeType) {
     this._config.animeSelectWindowSize = size;
   }
 
@@ -28,11 +28,11 @@ class AniPlayerConfig {
     fs.writeFileSync(this._configFilepath, JSON.stringify(this._config, null, 2));
   }
 
-  get mainWindowSize(): AppConfigWindowSize {
+  get mainWindowSize(): AppConfigWindowSizeType {
     return this._config.mainWindowSize;
   }
 
-  get animeSelectWindowSize(): AppConfigWindowSize {
+  get animeSelectWindowSize(): AppConfigWindowSizeType {
     return this._config.animeSelectWindowSize;
   }
 
@@ -43,7 +43,7 @@ class AniPlayerConfig {
     return path.dirname(this._app.getPath('exe'));
   }
 
-  protected _getConfig(): AppConfig {
+  protected _getConfig(): AppConfigType {
     if (!fs.existsSync(this._configFilepath)) {
       return Object.assign({}, DEFAULT_CONFIG);
     }
@@ -61,8 +61,13 @@ class AniPlayerConfig {
   }
 
   protected _isValidConfig(config: any): boolean {
-    const result = aniPlayerConfigSchema.validate(config);
-    return !Boolean(result.error);
+    try {
+      AppConfig.parse(config);
+      console.log("validated config")
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 

@@ -5,6 +5,7 @@ Anime streaming electron app that uses [Consumet API](https://github.com/consume
 ## Prerequisites
 
 - Node.js v16+ or nvm
+- pnpm
 
 ## Running locally
 
@@ -12,12 +13,12 @@ Clone repository and install dependencies
 ```shell
 git clone https://github.com/xLasercut/ani-player.git
 cd ani-player
-npm install
+pnpm install
 ```
 
 Run app
 ```shell
-npm run app:dev
+pnpm app:dev
 ```
 
 App settings are saved in `ani-player-settings.json` in the root of the repository
@@ -26,12 +27,12 @@ App settings are saved in `ani-player-settings.json` in the root of the reposito
 
 The app can be built for linux, windows and mac. To build the app, run:
 ```shell
-npm run app:build
+pnpm app:build
 ```
 
 or if you want to build cross platform using docker container:
 ```shell
-npm run app:build:docker
+pnpm app:build:docker
 ./node_modules/.bin/electron-builder --win
 ```
 

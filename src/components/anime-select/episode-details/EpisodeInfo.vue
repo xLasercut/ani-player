@@ -8,35 +8,27 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { PropType } from 'vue';
 import { AnimeEpisodeDetails } from '../../../assets/interfaces';
 import { ipc } from '../../../assets/frontend/ipc';
 import { IPC_EVENTS } from '../../../electron/shared/constants';
 
-export default defineComponent({
-  props: {
-    episodeDetails: {
-      type: Object as PropType<AnimeEpisodeDetails>,
-      required: true
-    }
-  },
-  setup() {
-    function playVideo(videoUrl: string): void {
-      ipc.send(IPC_EVENTS.PLAY_VIDEO, videoUrl);
-    }
-
-    function videoFormat(url: string): string {
-      const urlSplit = url.split('.');
-      return urlSplit[urlSplit.length - 1];
-    }
-
-    return {
-      playVideo,
-      videoFormat
-    };
+defineProps({
+  episodeDetails: {
+    type: Object as PropType<AnimeEpisodeDetails>,
+    required: true
   }
 });
+
+function playVideo(videoUrl: string): void {
+  ipc.send(IPC_EVENTS.PLAY_VIDEO, videoUrl);
+}
+
+function videoFormat(url: string): string {
+  const urlSplit = url.split('.');
+  return urlSplit[urlSplit.length - 1];
+}
 </script>
 
 <style scoped>
